@@ -4,9 +4,6 @@ build/
 # Ignore the VSCode settings
 .vscode/
 
-# Ignore compiled binaries
-box_segmentation
-
 # Ignore generated intermediate outputs
 Results/
 
