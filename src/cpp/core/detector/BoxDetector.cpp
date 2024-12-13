@@ -110,11 +110,11 @@ cv::Mat BoxDetector::filterBoxes(cv::Mat &detBoxesImage)
   }
 
   // Try merging two flaps to check if they form a box
-  for (const auto &flap1 : maybeFlaps)
+  for (size_t i = 0; i < maybeFlaps.size(); ++i)
   {
-    for (const auto &flap2 : maybeFlaps)
+    for (size_t j = i + 1; j < maybeFlaps.size(); ++j)
     {
-      Box mergedBox = flap1.mergeWith(flap2);
+      Box mergedBox = maybeFlaps[i].mergeWith(maybeFlaps[j]);
       if (mergedBox.isAspectRatioValid(avgAspectRatio, devAspectRatio) &&
           mergedBox.isAreaValid(avgArea, devArea))
       {
@@ -193,7 +193,7 @@ cv::Mat BoxDetector::inferBoxes(cv::Mat &filtBoxesImage)
       cv::Scalar color{Colors::randomColor()};
       cluster.draw(inferBoxesImage, color);
       clusterBox.draw(inferBoxesImage, color);
-      cv::line(inferBoxesImage, closestEnd, closestStart, Colors::white, 6);
+      // cv::line(inferBoxesImage, closestEnd, closestStart, Colors::white, 6);
     }
   }
 

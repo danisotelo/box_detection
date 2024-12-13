@@ -1,5 +1,9 @@
 # Telexistence Take Home Assignment
-## Box detection data-driven AI
+<p align="center">
+  <img src="img/example_seg_2.png" alt="Example seg 3" width="90%" />
+</p>
+
+## Data-driven AI-based box detection
 
 This project implements a deep learning pipeline for training an instance segmentation model to detect the upper surfaces of boxes. The design focuses modularity, flexibility and efficiency to ensure that the pipeline can scale with larger datasets whle maintaining ease of use.
 
