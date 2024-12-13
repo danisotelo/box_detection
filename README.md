@@ -109,8 +109,8 @@ The preprocessing stage consists of two phases: first, creating a mask over the 
 After extracting the point cloud, it is down-sampled to lower computational load and some outliers are initially removed. Then, three planes are detected using RANSAC algorithm (this number enables to detect the boxes top faces plane, the floor and a self in case there is one (see image 1.png)). Each of these detected planes is filtered again to remove outliers and it is then checked if it has a rectangle aspect ratio typical of a pallet (around 1.2) using PCA. They are additionally filtered by their average depth (since the self and the floor are either higher or lower than the boxes top face by a good margin). If a plane is found then the 2D projected mask from the segmented 3D point cloud is calculated and applied to the original image. In case this plane is not found due to the intrinsic statistical nature of the RANSAC algorithm, the masking stage runs again. The masked image are saved in the `Results/masked/` folder.
 
 <p align="center">
-  <img src="img/example_mask.png" alt="Example mask" width="45%", height="250px" />
-  <img src="img/example_pcl.png" alt="Example pcl" width="45%", height="250px" />
+  <img src="img/example_mask.png" alt="Example mask" width="45%", height="300px" />
+  <img src="img/example_pcl.png" alt="Example pcl" width="45%", height="300px" />
 </p>
 
 ### 1.2. Gaussian blurring, edge detection, dilation and erosion
