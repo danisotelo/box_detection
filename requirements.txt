@@ -1,0 +1,10 @@
+torch
+torchvision
+pillow
+numpy
+opencv-python-headless
+tensorboard
+tqdm
+
+# Required for .pkl to .bin
+open3d
