@@ -1,6 +1,6 @@
 # Telexistence Take Home Assignment
 <p align="center">
-  <img src="img/example_seg_2.png" alt="Example seg 3" width="90%" />
+  <img src="img/example_out_2.png" alt="Example out 2" width="90%" />
 </p>
 
 ## Data-driven AI-based box detection
