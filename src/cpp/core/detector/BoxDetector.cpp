@@ -109,7 +109,7 @@ cv::Mat BoxDetector::filterBoxes(cv::Mat &detBoxesImage)
     }
   }
 
-  // Try merging two flaps to check if they form a box
+  // Try merging two flaps and check if they form a box
   for (size_t i = 0; i < maybeFlaps.size(); ++i)
   {
     for (size_t j = i + 1; j < maybeFlaps.size(); ++j)
