@@ -5,15 +5,15 @@
 
 ## Data-driven AI-based box detection
 
-This project implements a deep learning pipeline for training an instance segmentation model to detect the upper surfaces of boxes. The design focuses modularity, flexibility and efficiency to ensure that the pipeline can scale with larger datasets whle maintaining ease of use.
+This project implements a deep learning pipeline for training an instance segmentation model to detect the upper surfaces of boxes. The design focuses on modularity, flexibility and efficiency to ensure that the pipeline can scale with larger datasets whle maintaining ease of use.
 
 ### Dependencies
 To ensure seamless execution, this project requires several dependencies, which are listed in the `requirements.txt` file. These include: 
 - PyTorch and TorchVision: For implementing and training the Mask R-CNN model with a ResNet50 backbone.
-- Pillow and OpenCV: For image loading, processing, and augmentations.
+- Pillow and OpenCV: For image loading and processing.
 - TensorBoard: For logging and visualizing training metrics such as loss.
 - TQDM: For monitoring progress during training loops.
-- NumPy: For numerical operations, particularly in annotation handling.
+- NumPy: For numerical operations.
 - Open3D: Used in the second part of the assignment. Needed for the Python script to convert point cloud `.pkl` files to binaries readable in C++.
 
 To install these dependencies, the following command is used:
@@ -24,10 +24,10 @@ pip install -r requirements.txt
 ### How to train
 The training pipeline is designed to be user-friendly while incorporating modular components for flexibility. Follow these steps to train the model:
 
-### 1. Prepare the dataset
+#### 1. Prepare the dataset
 The pipeline assumes a structured dataset located in the `Data/` folder. Each `.png` image must have a corresponding `.json` annotation file in LabelMe format. The annotations define polygons outlining the box surfaces, enabling the model to learn instance segmentation.
 
-### 2. Run the training script
+#### 2. Run the training script
 To begin training, execute the `train.py` script:
 ```
 cd src/python
@@ -35,10 +35,10 @@ python train.py
 ```
 The script automatically loads the dataset, applies augmentations, initializes the model with a pretrained backbone, and begins training with configurable parameters such as batch size and learning rate. If a NVIDIA GPU is detected, the training process leverages GPU acceleration, significantly speeding up computation by utilizing CUDA.
 
-### 3. Training outputs
+#### 3. Training outputs
 Model weights will be saved periodically in the `weights/` directory to allow recovery or fine-tuning at later stages. Training metrics such as loss will be logged in Tensorboard and stored in `runs/` folder for visualization.
 
-### 4. Monitor training with Tensorboard
+#### 4. Monitor training with Tensorboard
 TensorBoard integration provides a visual interface for monitoring training progress:
 ```
 tensorboard --logdir=runs
@@ -68,18 +68,18 @@ For the second task, the program has been written in C++ with an OOP approach an
 
 In order to run the program you will need to have installed OpenCV, Eigen3 and Point Cloud Library (PCL 1.13, since 1.12 gives a segmentation fault error with the point cloud visualization):
 
-### 1. Install OpenCV
+#### 1. Install OpenCV
 ```
 sudo apt update
 sudo apt install libopencv-dev
 ```
 
-### 2. Install Eigen3
+#### 2. Install Eigen3
 ```
 sudo apt install libeigen3-dev
 ```
 
-### 3. Install PCL 1.13
+#### 3. Install PCL 1.13
 The `libpcl-dev` package available via `sudo apt install` typically provides version 1.12 of the Point Cloud Library. This is enough to run the program but not to visualize the point cloud without causing errors. To install PCL version 1.13, you will need to build it from source:
 ```
 git clone --branch pcl-1.13.0 https://github.com/PointCloudLibrary/pcl.git
@@ -106,10 +106,10 @@ You will then be asked to enter if you want to process either a single image or 
 ### Algorithm explanation
 The main program consists of two stages: the preprocessing stage carried out by the `Preprocessor.cpp` class and the detecting and segmenting stage, carried out by the `BoxDetector.cpp` class. 
 
-### 1. Preprocessing
+#### 1. Preprocessing
 The preprocessing stage consists of two phases: first, creating a mask over the image to avoid detecting boxes on external objects that are not located on the pallet using the depth camera information; and second, preprocessing the image to detect the edges and prepare it for better box contour detection (Canny edge detection, Gaussian blur, dilation and erosion).
 
-### 1.1. Masking the image with depth info
+#### 1.1. Masking the image with depth info
 After extracting the point cloud, it is down-sampled to lower computational load and some outliers are initially removed. Then, three planes are detected using RANSAC algorithm (this number enables to detect the boxes top faces plane, the floor and a self in case there is one (see image 1.png)). Each of these detected planes is filtered again to remove outliers and it is then checked if it has a rectangle aspect ratio typical of a pallet (around 1.2) using PCA. They are additionally filtered by their average depth (since the self and the floor are either higher or lower than the boxes top face by a good margin). If a plane is found then the 2D projected mask from the segmented 3D point cloud is calculated and applied to the original image. In case this plane is not found due to the intrinsic statistical nature of the RANSAC algorithm, the masking stage runs again. The masked image are saved in the `Results/masked/` folder.
 
 <p align="center">
@@ -117,7 +117,7 @@ After extracting the point cloud, it is down-sampled to lower computational load
   <img src="img/example_pcl.png" alt="Example pcl" width="45%", height="300px" />
 </p>
 
-### 1.2. Gaussian blurring, edge detection, dilation and erosion
+#### 1.2. Gaussian blurring, edge detection, dilation and erosion
 The preprocessing stage enhances the input image to optimize the box detection by applying channel-wise edge detection and post-processing operations. First, the image is split into its three color channels and then each channel undergoes a Gaussian blur followed by Canny edge detection to extract prominent edges. The edge-detected channels are then combined, resulting in a unified edge map. Then, the combined edge map is again blurred and dilated to expand and connect nearby edges. Finally, erosion is applied to refine the edges by removing small artifacts. The resulting image is saved in `Results/edges/`.
 
 <p align="center">
@@ -126,11 +126,11 @@ The preprocessing stage enhances the input image to optimize the box detection b
   <img src="img/example_edges_3.png" alt="Example edges 3" width="30%" />
 </p>
 
-### 2. Box detection
+#### 2. Box detection
 
 The box detection stage processes the edge-detected image to identify, filter, and infer missing boxes. This stage consists of four key steps: initial box detection, detected boxes filtering, missing boxes inferring, and box segmentation. These processes are implemented in the `BoxDetector.cpp` class.
 
-### 2.1. Initial box detection
+#### 2.1. Initial box detection
 Initially the edge-detected image identifies contours representing potential boxes. Each contour is approximated to a rotated rectangle to determine its geometric properties such as area and aspect ratio. Boxes are filtered based on their area (discarding very small or very large contours) and aspect ratio to exclude non-box-like shapes. Overlapping or nested boxes are handled by checking whether a box is inside an already detected box or if smaller boxes are contained within a new box. The remaining valid boxes are stored as detected boxes, while larger contours potentially representing pallet areas are stored separately. The detected boxes are drawn in yellow on the images saved in the `Results/det_boxes/` folder.
 
 <p align="center">
@@ -140,7 +140,7 @@ Initially the edge-detected image identifies contours representing potential box
 </p>
 
 
-### 2.2. Detected boxes filtering
+#### 2.2. Detected boxes filtering
 This filtering stage further refines the detected boxes based on additional geometric constraints. Candidate pallet boxes are filtered by checking if their angle is within a defined deviation from the most common angle (calculated across all detected boxes). Other boxes are filtered based on their proximity to the average aspect ratio and angle of the detected boxes. Additionally, potential box flaps that might form a valid box when merged are combined and checked against the same geometric constraints. This ensures robust filtering of false positivies while retaining valid boxes. Filtered boxes are drawn in red and the pallet box in blue and are saved in `Results/det_boxes/`.
 <p align="center">
   <img src="img/example_filt_1.png" alt="Example filt" width="45%"/>
@@ -148,19 +148,19 @@ This filtering stage further refines the detected boxes based on additional geom
 </p>
 
 
-### 2.3. Missing boxes inferring
+#### 2.3. Missing boxes inferring
 This method addresses cases where some boxes might not have been detected. Using a Monte Carlo approach, random points are sampled within the pallet area. Points outside the existing detected boxes are clustered using a DBSCAN-based clustering algorithm implemented in the `ClustersProcessor` class. The estimated number of clusters corresponds to the number of missing boxes. For each cluster, its centroid and bounding dimensions are computed using principal components and geometric projections. The boxes are drawn from the cluster's closest detected segment. The resulting box dimensions and positions are validated against aspect ratio and area constraints before being added to the detected boxes and saved in the `Results/inferred_boxes/` folder.
 <p align="center">
   <img src="img/example_inf_1.png" alt="Example infer" width="45%"/>
   <img src="img/example_inf_3.png" alt="Example infer 3" width="45%" />
 </p>
 
-### 2.4. Segment boxes
+#### 2.4. Segment boxes
 In the final step, a segmentation mask is applied to visually highlight the detected boxes. Each box is assigned a unique color, and its mask is draw on the image. Borders of the boxes are drwan and their numbers are displayed at their respective centers. The segmented image is then blended with the original input to create a final overlay, highlighting all detected boxes with their contours and labels and saved in `Results/output/` folder.
 <p align="center">
   <img src="img/example_out_1.png" alt="Example out" width="30%"/>
   <img src="img/example_out_2.png" alt="Example out 2" width="30%" />
-  <img src="img/example_out_3.png" alt="Example out 3" width="30%" />
+  <img src="img/example_out_3.png" alt="Example  out 3" width="30%" />
 </p>
 
 ### Limitations and future improvements
