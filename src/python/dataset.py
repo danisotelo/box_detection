@@ -16,6 +16,7 @@ from torchvision.transforms import (
 )
 
 
+# ChatGPT was used to build part of this class
 class BoxDataset(Dataset):
     """
     Custom PyTorch Dataset to load and preprocess box detection data.
@@ -96,16 +97,16 @@ def get_transforms(train=True):
     transforms = [ToTensor()]  # Always convert to tensor
 
     if train:
-        moderate_augmentations = [
+        augmentations = [
             RandomHorizontalFlip(p=0.5),  # Horizontal flip
-            RandomRotation(degrees=90),  # Rotate within ±10 degrees
+            RandomRotation(degrees=90),  # Rotate within ±90 degrees
             ColorJitter(
                 brightness=0.3, contrast=0.3, saturation=0.3, hue=0.05
             ),  # Adjust colors
         ]
 
-        # Randomly apply one augmentation (or none)
-        transforms.append(RandomChoice(moderate_augmentations))
+        # Randomly apply one augmentation
+        transforms.append(RandomChoice(augmentations))
 
     # Normalize based on the pretrained backbone
     # These are the standard ImageNet normalization values

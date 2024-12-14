@@ -1,6 +1,5 @@
 import os
 import torch
-from torch.utils.tensorboard import SummaryWriter
 
 
 def save_model(model, optimizer, epoch, path="model.pth"):
@@ -36,4 +35,4 @@ def log_tensorboard(writer, epoch, loss):
         epoch (int): Current epoch.
         loss (float): Training loss for the epoch.
     """
-    writer.add_scalar("Loss/Train", loss, epoch)
+    writer.add_scalar("Loss/Train", loss, epoch + 1)
