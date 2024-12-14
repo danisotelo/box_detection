@@ -151,16 +151,16 @@ This filtering stage further refines the detected boxes based on additional geom
 ### 2.3. Missing boxes inferring
 This method addresses cases where some boxes might not have been detected. Using a Monte Carlo approach, random points are sampled within the pallet area. Points outside the existing detected boxes are clustered using a DBSCAN-based clustering algorithm implemented in the `ClustersProcessor` class. The estimated number of clusters corresponds to the number of missing boxes. For each cluster, its centroid and bounding dimensions are computed using principal components and geometric projections. The boxes are drawn from the cluster's closest detected segment. The resulting box dimensions and positions are validated against aspect ratio and area constraints before being added to the detected boxes and saved in the `Results/inferred_boxes/` folder.
 <p align="center">
-  <img src="img/example_infer_1.png" alt="Example infer" width="45%"/>
-  <img src="img/example_infer_3.png" alt="Example infer 3" width="45%" />
+  <img src="img/example_inf_1.png" alt="Example infer" width="45%"/>
+  <img src="img/example_inf_3.png" alt="Example infer 3" width="45%" />
 </p>
 
 ### 2.4. Segment boxes
 In the final step, a segmentation mask is applied to visually highlight the detected boxes. Each box is assigned a unique color, and its mask is draw on the image. Borders of the boxes are drwan and their numbers are displayed at their respective centers. The segmented image is then blended with the original input to create a final overlay, highlighting all detected boxes with their contours and labels and saved in `Results/output/` folder.
 <p align="center">
-  <img src="img/example_seg_1.png" alt="Example seg" width="30%"/>
-  <img src="img/example_seg_2.png" alt="Example seg 3" width="30%" />
-  <img src="img/example_seg_3.png" alt="Example seg 3" width="30%" />
+  <img src="img/example_out_1.png" alt="Example out" width="30%"/>
+  <img src="img/example_out_2.png" alt="Example out 2" width="30%" />
+  <img src="img/example_out_3.png" alt="Example out 3" width="30%" />
 </p>
 
 ### Limitations and future improvements
